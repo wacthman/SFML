@@ -40,7 +40,11 @@
 #import <SFML/Window/OSX/SFOpenGLView.h>
 #import <SFML/Window/OSX/SFWindow.h>
 #import <SFML/Window/OSX/SFWindowController.h>
+#if ZDC_PLATFORM_MACOS_USE_VULKAN
+#import <QuartzCore/CAMetalLayer.h>
+#else
 #import <OpenGL/OpenGL.h>
+#endif
 
 #if defined(__APPLE__)
     #if defined(__clang__)
@@ -240,6 +244,11 @@
         return;
     }
 
+#if ZDC_PLATFORM_MACOS_USE_VULKAN
+    m_oglView.wantsLayer = true;
+    m_oglView.layer = [CAMetalLayer layer];
+#endif
+
     // Populate the window and views
     [masterView addSubview:m_oglView];
     [m_window setContentView:masterView];
@@ -301,6 +310,11 @@
         return;
     }
 
+#if ZDC_PLATFORM_MACOS_USE_VULKAN
+    m_oglView.wantsLayer = true;
+    m_oglView.layer = [CAMetalLayer layer];
+#endif
+
     // Set the view to the window as its content view.
     [m_window setContentView:m_oglView];
 
@@ -352,7 +366,11 @@
 ////////////////////////////////////////////////////////
 -(sf::WindowHandle)getSystemHandle
 {
+#if ZDC_PLATFORM_MACOS_USE_VULKAN
+    return m_oglView;
+#else
     return m_window;
+#endif
 }
 
 
